@@ -1,28 +1,33 @@
 import 'dart:convert';
 import 'package:bus_app/models/busStation_model.dart';
+import 'package:bus_app/models/busid.dart';
+import 'package:bus_app/models/line_station_arr_model.dart';
+import 'package:bus_app/models/line_station_model.dart';
+import 'package:bus_app/models/station_arr_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:xml2json/xml2json.dart';
 
 
 class ApiServices{
 
-  final String baseUrl = 'https://apis.data.go.kr/6260000/BusanBIMS/busInfo?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D';
   //baseUrl은 사용하는 모든 api에 들어가는 요소
   //'$baseUrl&lineno'
   //'$baseUrl&lineid'
 
-  final String localUrl = '%EB%B6%80%EC%82%B0%EC%A7%84%EA%B5%AC6';
   //localUrl = 부산진구의 버스넘버=lineno => 숫자를 넣어도 됨 ex)버스번호 1번이면 lineno=1
   //lineno로 lineid를 구하면 버스의 실시간 정보를 받을 수 있다.
   //노선정보조회 API로 lineid를 구함 => 노선 정류소 조회 API사용
 
-  final String testUrl = 'https://apis.data.go.kr/6260000/BusanBIMS/busStopList?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D&pageNo=1&numOfRows=10&bstopnm=%EB%8F%99%EC%9D%98%EB%8C%80%EC%97%AD';
   //위 url은 정류소정보 조회 api중 특정 파라미터가 첨가된것
   //사용시 파라미터를 변환해줘야함.
 
-  getBusStation() async{ //버스정류장 정보 검색
+  Future<List<BusStation>>getBusStationInfo(String bstopnm) async{ //버스정류장 정보 검색
+    //1
+
+    final String API = 'https://apis.data.go.kr/6260000/BusanBIMS/busStopList?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D';
+
     List<BusStation> busStationInstances = [];
-    final url= Uri.parse(testUrl);
+    final url= Uri.parse('$API&bstopnm=$bstopnm');
     final response = await http.get(url);
 
     final getXmlData = response.body; //xml 데이터를 받아온다.
@@ -31,14 +36,107 @@ class ApiServices{
     final List<dynamic> busStations= jsonDecode(jsonData)['response']['body']['items']['item'];
     //print(busStations[0]['stoptype'].runtimeType);
     for(var busStation in busStations){
-    print(BusStation.fromJson(busStation).gpsx);
+    //print(BusStation.fromJson(busStation).gpsx);
     busStationInstances.add(BusStation.fromJson(busStation));
     //print(busStation);
   }
-    print(busStationInstances);
+    return busStationInstances;
+    //print(busStationInstances);
   }
 
-    getLineId(){}
+  Future<List<BusId>> getLineId(String lineno)async{ 
+    //노선 정보 조회
+    //lineid를 구하기 위한 API
+    //2
 
-  getCurrentLocation(){}
+    final String API = 'https://apis.data.go.kr/6260000/BusanBIMS/busInfo?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D';
+
+    List<BusId> busLineId = [];
+    final url = Uri.parse('$API&lineno=$lineno');
+    final response = await http.get(url);
+
+    final getXmlData = response.body; 
+    final Xml2JsonData = Xml2Json()..parse(getXmlData);
+    final jsonData = Xml2JsonData.toParker(); 
+    final buses= jsonDecode(jsonData)['response']['body']['items']['item'];
+
+    //print(buses.runtimeType);
+    if('${buses.runtimeType}'=="List<dynamic>"){
+      for(var bus in buses){
+      busLineId.add(BusId.fromJson(bus));
+    }
+    }else{
+      busLineId.add(BusId.fromJson(buses));
+      //print('Map');
+    }
+    return busLineId;
+  }
+
+  //https://apis.data.go.kr/6260000/BusanBIMS/busInfo?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D&lineid=5200179000&lineno=179
+
+
+  // 4-https://apis.data.go.kr/6260000/BusanBIMS/stopArrByBstopid?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D&bstopid=505780000
+  // 5-https://apis.data.go.kr/6260000/BusanBIMS/busStopArrByBstopidLineid?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D&lineid=5200179000&bstopid=505780000
+  Future<List<LineStationModel>> getLineStationInfo(String lineid) async{
+    //노선 정류소 조회
+    //3
+
+    final String API = 'https://apis.data.go.kr/6260000/BusanBIMS/busInfoByRouteId?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D';
+
+    final url = Uri.parse('$API&lineid=$lineid');
+    final response = await http.get(url);
+
+    List<LineStationModel> listStationInstances = [];
+
+    final getXmlData = response.body; 
+    final Xml2JsonData = Xml2Json()..parse(getXmlData);
+    final jsonData = Xml2JsonData.toParker(); 
+    final lineStations= jsonDecode(jsonData)['response']['body']['items']['item'];
+    for(var lineStation in lineStations){
+    listStationInstances.add(LineStationModel.fromJson(lineStation));
+  }
+    return listStationInstances;
+  }
+
+  Future<List<StationArrModel>> getStationArrInfo( String bstopid) async{
+    //4
+
+    final String API = 'https://apis.data.go.kr/6260000/BusanBIMS/stopArrByBstopid?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D';
+
+    List<StationArrModel> arrInfoInstances = [];
+
+    final url = Uri.parse('$API&bstopid=$bstopid');
+    final response = await http.get(url);
+
+    final getXmlData = response.body; 
+    final Xml2JsonData = Xml2Json()..parse(getXmlData);
+    final jsonData = Xml2JsonData.toParker(); 
+    final infos = jsonDecode(jsonData)['response']['body']['items']['item'];
+
+    for(var info in infos ){
+    arrInfoInstances.add(StationArrModel.fromJson(info));
+  }
+    return arrInfoInstances;
+  }
+  //	노선 정류소 도착정보 조회
+  Future<List<LineStationArrInfoModel>> getLineStationArrInfo(String lineid, String bstopid) async{
+    //5
+    final String API = 'https://apis.data.go.kr/6260000/BusanBIMS/busStopArrByBstopidLineid?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D';
+    List<LineStationArrInfoModel> infoInStances = [];
+
+    final url =Uri.parse('$API&lineid=$lineid&bstopid=$bstopid');
+    final response = await http.get(url);
+
+    final getXmlData = response.body; 
+    final Xml2JsonData = Xml2Json()..parse(getXmlData);
+    final jsonData = Xml2JsonData.toParker(); 
+    final info = jsonDecode(jsonData)['response']['body']['items']['item'];
+
+    infoInStances.add(LineStationArrInfoModel.fromJson(info));
+    return infoInStances;
+    //    for(var info in infos){
+    //    infoInStances.add(LineStationArrInfoModel.fromJson(info));
+    //    print(infoInStances);
+    //  }
+  }
 }
