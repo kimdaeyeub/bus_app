@@ -14,23 +14,25 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   int value = 0;
   bool segmentClick = true;
+  bool widgetControll = false;
   final TextEditingController _searchController = TextEditingController();
-  Future<List<BusId>> busList = ApiServices.getLineId('1');
-  Future<List<BusStation>> stationList = ApiServices.getBusStationInfo('부산');
+  Future<List<BusId>> busList = ApiServices.getLineId('');
+  Future<List<BusStation>> stationList = ApiServices.getBusStationInfo('');
 
   segementControl(value){
     setState(() {
       this.value=value;
       segmentClick = !segmentClick;
       _searchController.clear();
+      if(_searchController.text == ''){
+        widgetControll = false;
+        print(widgetControll);
+      }else{
+        widgetControll = true;
+        print(widgetControll);
+      }
     });
   }
-
-  //  @override
-  //  void initState() {
-  //    super.initState();
-  //    busList = ApiServices.getLineId("1");
-  //  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +72,7 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: const EdgeInsets.all(20),
               child: TextFormField(
                 onChanged: (value) {
+                  widgetControll = true;
                   setState(() {
                     if(segmentClick){
                       busList = ApiServices.getLineId(value);
@@ -113,7 +116,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             ),
-            segmentClick ? SearchResult(dataList: busList , dataType:segmentClick) : SearchResult(dataList :stationList, dataType:segmentClick),
+            //segmentClick ? SearchResult(dataList: busList , dataType:segmentClick) : SearchResult(dataList :stationList, dataType:segmentClick),
+            widgetControll ? SearchResult(
+              dataList: segmentClick ? busList : stationList,
+              dataType: segmentClick
+            ) :Text('')
           ],
         ),
       ),
@@ -163,26 +170,35 @@ class SearchResult extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical:30, horizontal:15),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              dataType 
-                              ?
-                              '${data.buslinenum}번' 
-                              :
-                              '${data.bstopnm}',
-                              style: TextStyle(
-                                fontSize:22,
-                                fontWeight: FontWeight.w600
-                              ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  dataType ? '${data.buslinenum}' : '${data.bstopnm}',
+                                  //'hello',
+                                  style: TextStyle(
+                                    fontSize:22,
+                                    fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                                SizedBox(width: 10,),
+                                Text(
+                                  dataType ? '${data.startpoint} ~ ${data.endpoint}' : '',
+                                  //'hi',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black.withOpacity(0.4)
+                                  ),
+                                )
+                              ],
                             ),
-                            SizedBox(width: 10,),
-                            Text(
-                              dataType ? '${data.startpoint} ~ ${data.endpoint}' : '',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.black.withOpacity(0.4)
-                              ),
+                            IconButton(
+                              icon: Icon(Icons.arrow_circle_up_sharp),
+                              onPressed: () {
+
+                              },
                             )
                           ],
                         ),

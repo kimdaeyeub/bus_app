@@ -29,18 +29,21 @@ class ApiServices{
     List<BusStation> busStationInstances = [];
     final url= Uri.parse('$API&bstopnm=$bstopnm');
     final response = await http.get(url);
+    if(response.statusCode ==200){
+      final getXmlData = response.body; //xml 데이터를 받아온다.
+      final Xml2JsonData = Xml2Json()..parse(getXmlData); //json으로 변환
+      final jsonData = Xml2JsonData.toParker(); //그냥 령식 옵션
+      final List<dynamic> busStations= jsonDecode(jsonData)['response']['body']['items']['item'];
+      //print(busStations[0]['stoptype'].runtimeType);
+      for(var busStation in busStations){
+      //print(BusStation.fromJson(busStation).gpsx);
+      busStationInstances.add(BusStation.fromJson(busStation));
+      //print(busStation);
+    }
+      return busStationInstances;
+    }
+    throw Error();
 
-    final getXmlData = response.body; //xml 데이터를 받아온다.
-    final Xml2JsonData = Xml2Json()..parse(getXmlData); //json으로 변환
-    final jsonData = Xml2JsonData.toParker(); //그냥 령식 옵션
-    final List<dynamic> busStations= jsonDecode(jsonData)['response']['body']['items']['item'];
-    //print(busStations[0]['stoptype'].runtimeType);
-    for(var busStation in busStations){
-    //print(BusStation.fromJson(busStation).gpsx);
-    busStationInstances.add(BusStation.fromJson(busStation));
-    //print(busStation);
-  }
-    return busStationInstances;
     //print(busStationInstances);
   }
 
@@ -55,22 +58,25 @@ class ApiServices{
     List<BusId> busLineId = [];
     final url = Uri.parse('$API&lineno=$lineno');
     final response = await http.get(url);
+    if(response.statusCode ==200){
+      final getXmlData = response.body; 
+      final Xml2JsonData = Xml2Json()..parse(getXmlData);
+      final jsonData = Xml2JsonData.toParker(); 
+      final buses= jsonDecode(jsonData)['response']['body']['items']['item'];
 
-    final getXmlData = response.body; 
-    final Xml2JsonData = Xml2Json()..parse(getXmlData);
-    final jsonData = Xml2JsonData.toParker(); 
-    final buses= jsonDecode(jsonData)['response']['body']['items']['item'];
+      //print(buses.runtimeType);
+      if('${buses.runtimeType}'=="List<dynamic>"){
+        for(var bus in buses){
+        busLineId.add(BusId.fromJson(bus));
+      }
+      }else{
+        busLineId.add(BusId.fromJson(buses));
+        //print('Map');
+      }
+      return busLineId;
+    }
+    throw Error();
 
-    //print(buses.runtimeType);
-    if('${buses.runtimeType}'=="List<dynamic>"){
-      for(var bus in buses){
-      busLineId.add(BusId.fromJson(bus));
-    }
-    }else{
-      busLineId.add(BusId.fromJson(buses));
-      //print('Map');
-    }
-    return busLineId;
   }
 
   //https://apis.data.go.kr/6260000/BusanBIMS/busInfo?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D&lineid=5200179000&lineno=179
