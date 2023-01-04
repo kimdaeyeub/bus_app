@@ -21,7 +21,7 @@ class ApiServices{
   //위 url은 정류소정보 조회 api중 특정 파라미터가 첨가된것
   //사용시 파라미터를 변환해줘야함.
 
-  Future<List<BusStation>>getBusStationInfo(String bstopnm) async{ //버스정류장 정보 검색
+  static Future<List<BusStation>>getBusStationInfo(String bstopnm) async{ //버스정류장 정보 검색
     //1
 
     final String API = 'https://apis.data.go.kr/6260000/BusanBIMS/busStopList?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D';
@@ -44,10 +44,11 @@ class ApiServices{
     //print(busStationInstances);
   }
 
-  Future<List<BusId>> getLineId(String lineno)async{ 
+  static Future<List<BusId>> getLineId(String lineno)async{ 
     //노선 정보 조회
     //lineid를 구하기 위한 API
     //2
+    //버스 번호를 검색하면 해당 번호가 포함되는 버스의 출발점과 종점을 알 수 있다.
 
     final String API = 'https://apis.data.go.kr/6260000/BusanBIMS/busInfo?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D';
 
@@ -77,9 +78,10 @@ class ApiServices{
 
   // 4-https://apis.data.go.kr/6260000/BusanBIMS/stopArrByBstopid?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D&bstopid=505780000
   // 5-https://apis.data.go.kr/6260000/BusanBIMS/busStopArrByBstopidLineid?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D&lineid=5200179000&bstopid=505780000
-  Future<List<LineStationModel>> getLineStationInfo(String lineid) async{
+  static Future<List<LineStationModel>> getLineStationInfo(String lineid) async{
     //노선 정류소 조회
     //3
+    //버스 진행도(버스 리스트)
 
     final String API = 'https://apis.data.go.kr/6260000/BusanBIMS/busInfoByRouteId?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D';
 
@@ -98,8 +100,9 @@ class ApiServices{
     return listStationInstances;
   }
 
-  Future<List<StationArrModel>> getStationArrInfo( String bstopid) async{
+  static Future<List<StationArrModel>> getStationArrInfo( String bstopid) async{
     //4
+    //정류장을 거쳐가는 버스 종류
 
     final String API = 'https://apis.data.go.kr/6260000/BusanBIMS/stopArrByBstopid?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D';
 
@@ -119,8 +122,10 @@ class ApiServices{
     return arrInfoInstances;
   }
   //	노선 정류소 도착정보 조회
-  Future<List<LineStationArrInfoModel>> getLineStationArrInfo(String lineid, String bstopid) async{
+  static Future<List<LineStationArrInfoModel>> getLineStationArrInfo(String lineid, String bstopid) async{
     //5
+    //해당 정류장까지 버스 남은 시간
+
     final String API = 'https://apis.data.go.kr/6260000/BusanBIMS/busStopArrByBstopidLineid?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D';
     List<LineStationArrInfoModel> infoInStances = [];
 

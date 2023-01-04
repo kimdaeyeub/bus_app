@@ -14,8 +14,9 @@
 //          },
 
 class BusId{
-  final String lineid, buslinenum, bustype, startpoint, endpoint,companyid, firsttime, endtime;
+  final String? lineid, endpoint,companyid, firsttime, endtime;
   final String? headway,headwaypeak,headwaynorm,headwayholi;
+  final String bustype, buslinenum, startpoint;
 
   BusId.fromJson(Map<String, dynamic> json):
     lineid = json['lineid'],
