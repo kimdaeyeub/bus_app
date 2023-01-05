@@ -21,7 +21,8 @@
 //          }
 
 class StationArrModel{
-  final String arsno, bstopid, lineno, nodenm, bstopidx, carno1, min1, station1, lowplate1, seat1, carno2, min2, station2, lowplate2, seat2, gpsx, gpsy, bustype, lineid;
+  final String? arsno, min1, station1, min2, station2, bstopid, nodenm, bstopidx, carno1, lowplate1, seat1, carno2, lowplate2, seat2, gpsx, gpsy, bustype, lineid;
+  final String lineno;
 
   StationArrModel.fromJson(Map<String, dynamic> json):
     arsno=json['arsno'],

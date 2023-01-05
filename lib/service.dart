@@ -106,7 +106,7 @@ class ApiServices{
     return listStationInstances;
   }
 
-  static Future<List<StationArrModel>> getStationArrInfo( String bstopid) async{
+  static Future<List<StationArrModel>> getStationArrInfo(String bstopid) async{
     //4
     //정류장을 거쳐가는 버스 종류
 
@@ -122,9 +122,25 @@ class ApiServices{
     final jsonData = Xml2JsonData.toParker(); 
     final infos = jsonDecode(jsonData)['response']['body']['items']['item'];
 
-    for(var info in infos ){
-    arrInfoInstances.add(StationArrModel.fromJson(info));
-  }
+    print('infos:$infos');
+    if('${infos.runtimeType}' == 'List<dynamic>'){
+      //print('true');
+      for(var info in infos ){
+      //print('info:$info');
+      arrInfoInstances.add(StationArrModel.fromJson(info));
+    }
+    }else{
+      //print('false');
+      arrInfoInstances.add(StationArrModel.fromJson(infos));
+      //print('infos:$infos');
+    }
+
+    //    print(infos.runtimeType);
+    //    print('infos:$infos');
+    //for(var info in infos ){
+    //arrInfoInstances.add(StationArrModel.fromJson(info));
+    //}
+    print('arrInfoInstances:$arrInfoInstances'); 
     return arrInfoInstances;
   }
   //	노선 정류소 도착정보 조회

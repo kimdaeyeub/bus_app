@@ -1,5 +1,7 @@
 import 'package:bus_app/models/busStation_model.dart';
 import 'package:bus_app/models/busid.dart';
+import 'package:bus_app/screens/detail/bus_detail_page.dart';
+import 'package:bus_app/screens/detail/station_detail_page.dart';
 import 'package:bus_app/service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,10 +28,8 @@ class _SearchScreenState extends State<SearchScreen> {
       _searchController.clear();
       if(_searchController.text == ''){
         widgetControll = false;
-        print(widgetControll);
       }else{
         widgetControll = true;
-        print(widgetControll);
       }
     });
   }
@@ -37,6 +37,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      //color:Colors.white,
       color: Colors.grey.withOpacity(0.2),
       child: Padding(
         padding: const EdgeInsets.all(10),
@@ -176,7 +177,7 @@ class SearchResult extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  dataType ? '${data.buslinenum}' : '${data.bstopnm}',
+                                  dataType ? '${data.buslinenum}번' : '${data.bstopnm}',
                                   //'hello',
                                   style: TextStyle(
                                     fontSize:22,
@@ -185,7 +186,7 @@ class SearchResult extends StatelessWidget {
                                 ),
                                 SizedBox(width: 10,),
                                 Text(
-                                  dataType ? '${data.startpoint} ~ ${data.endpoint}' : '',
+                                  dataType ? '${data.startpoint} ~ ${data.endpoint}' : '${data.arsno==null?'':data.arsno}(${data.stoptype})',
                                   //'hi',
                                   style: TextStyle(
                                     fontSize: 14,
@@ -195,9 +196,23 @@ class SearchResult extends StatelessWidget {
                               ],
                             ),
                             IconButton(
-                              icon: Icon(Icons.arrow_circle_up_sharp),
+                              icon: Icon(Icons.arrow_forward),
                               onPressed: () {
-
+                                 if(dataType){
+                                   Navigator.push(context,MaterialPageRoute(
+                                     builder: (context) =>BusDetailPage(
+                                       lineid: data.lineid,
+                                     ),
+                                     fullscreenDialog:true,
+                                   ));
+                                 }else{
+                                  Navigator.push(context,MaterialPageRoute(
+                                    builder: (context) =>StationDetailPage(
+                                      bstopid: data.bstopid,
+                                    ),
+                                    fullscreenDialog:true,
+                                  ));
+                                }
                               },
                             )
                           ],

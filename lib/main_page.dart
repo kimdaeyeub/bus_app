@@ -32,11 +32,11 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         elevation: 0,
         title: Text(
           'Bus',
           style: TextStyle(
-            color: Colors.black
           ),
         ),
       ),
