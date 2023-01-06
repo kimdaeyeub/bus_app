@@ -38,12 +38,12 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Container(
       //color:Colors.white,
-      color: Colors.grey.withOpacity(0.2),
+      color: Colors.grey[200],
       child: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            SizedBox(height:20),
+            SizedBox(height:10),
             CupertinoSlidingSegmentedControl(
               backgroundColor: Colors.black,
               thumbColor: Colors.white,
@@ -198,14 +198,14 @@ class SearchResult extends StatelessWidget {
                             IconButton(
                               icon: Icon(Icons.arrow_forward),
                               onPressed: () {
-                                 if(dataType){
-                                   Navigator.push(context,MaterialPageRoute(
-                                     builder: (context) =>BusDetailPage(
-                                       lineid: data.lineid,
-                                     ),
-                                     fullscreenDialog:true,
-                                   ));
-                                 }else{
+                                if(dataType){
+                                  Navigator.push(context,MaterialPageRoute(
+                                    builder: (context) =>BusDetailPage(
+                                      lineid: data.lineid,
+                                    ),
+                                    fullscreenDialog:true,
+                                  ));
+                                }else{
                                   Navigator.push(context,MaterialPageRoute(
                                     builder: (context) =>StationDetailPage(
                                       bstopid: data.bstopid,

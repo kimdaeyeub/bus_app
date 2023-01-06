@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:bus_app/models/station_arr_model.dart';
+import 'package:bus_app/screens/check_screen.dart';
 import 'package:bus_app/service.dart';
 import 'package:flutter/material.dart';
 
@@ -19,12 +22,19 @@ class _StationDetailPageState extends State<StationDetailPage> {
     super.initState();
     buses = ApiServices.getStationArrInfo(widget.bstopid);
   }
+  void timer(){
+    Timer(Duration(seconds:30),(() {
+      setState(() {
+        buses = ApiServices.getStationArrInfo(widget.bstopid);
+      });
+    }));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey[200],
         foregroundColor: Colors.black,
         elevation: 0,
         title: Text(
@@ -35,18 +45,18 @@ class _StationDetailPageState extends State<StationDetailPage> {
         ),
       ),
       body: Container(
-        color: Colors.grey.withOpacity(0.2),
+        color: Colors.grey[200],
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal:10,vertical:10),
           child: FutureBuilder(
             future: buses,
             builder: (context, snapshot) {
               if(snapshot.hasData){
+                timer();
                 return ListView.builder(
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
                     var bus = snapshot.data![index];
-                    print(bus.lineno);
                     return Column(
                       children: [
                         Container(
@@ -57,14 +67,14 @@ class _StationDetailPageState extends State<StationDetailPage> {
                             //),
                             borderRadius: BorderRadius.circular(20),
                             color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                spreadRadius: 2,
-                                blurRadius: 4,
-                                offset: Offset(0, 2), // changes position of shadow
-                              ),
-                            ]
+                            // boxShadow: [
+                            //   BoxShadow(
+                            //     color: Colors.grey.withOpacity(0.3),
+                            //     spreadRadius: 2,
+                            //     blurRadius: 4,
+                            //     offset: Offset(0, 2), // changes position of shadow
+                            //   ),
+                            // ]
                           ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical:30, horizontal:15),
@@ -78,9 +88,17 @@ class _StationDetailPageState extends State<StationDetailPage> {
                                     fontWeight: FontWeight.w600
                                   ),
                                 ),
-                                 Column(
-                                   children: [
-                                     Text(
+                                Column(
+                                  children: [
+                                    ElevatedButton(
+                                      child: Icon(Icons.directions_bus),
+                                      onPressed: () {
+                                        //CheckScreen(lineid:lineid, bstopid: bstopid)
+                                        print('lineid: ${bus.lineid}');
+                                        print('bstopid : ${bus.bstopid}');
+                                      },
+                                    ),
+                                    Text(
                                       bus.min1 != null ? '남은 시간:${bus.min1} / 남은 정류장수:${bus.station1}': "",
                                       style: TextStyle(
                                         fontSize: 14,

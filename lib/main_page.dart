@@ -21,7 +21,7 @@ class _MainPageState extends State<MainPage> {
   }
     
   List pages = [
-    HomeScreen(),
+    //HomeScreen(),
     SearchScreen(),
     CheckScreen(),
     SettingScreen()
@@ -31,8 +31,9 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey[200],
         foregroundColor: Colors.black,
+        //color: Colors.grey.withOpacity(0.2),
         elevation: 0,
         title: Text(
           'Bus',
@@ -41,13 +42,16 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        elevation: 0,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.grey[200],
         currentIndex: currentIndex,
         onTap: onTap,
         selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
         items: [
+          //BottomNavigationBarItem(icon: Icon(Icons.home),label:'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.home),label:'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search_rounded),label:'Search'),
           BottomNavigationBarItem(icon: Icon(Icons.checklist),label:'Check'),
           BottomNavigationBarItem(icon: Icon(Icons.settings_rounded),label:'Setting'),
         ],

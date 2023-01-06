@@ -122,7 +122,6 @@ class ApiServices{
     final jsonData = Xml2JsonData.toParker(); 
     final infos = jsonDecode(jsonData)['response']['body']['items']['item'];
 
-    print('infos:$infos');
     if('${infos.runtimeType}' == 'List<dynamic>'){
       //print('true');
       for(var info in infos ){
@@ -140,7 +139,6 @@ class ApiServices{
     //for(var info in infos ){
     //arrInfoInstances.add(StationArrModel.fromJson(info));
     //}
-    print('arrInfoInstances:$arrInfoInstances'); 
     return arrInfoInstances;
   }
   //	노선 정류소 도착정보 조회

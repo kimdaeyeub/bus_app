@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bus_app/models/line_station_model.dart';
 import 'package:bus_app/service.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +23,18 @@ class _BusDetailPageState extends State<BusDetailPage> {
     stationList = ApiServices.getLineStationInfo(widget.lineid);
   }
 
+    void timer(){
+    Timer(Duration(seconds:30),(() {
+          setState(() {
+        stationList = ApiServices.getLineStationInfo(widget.lineid);
+      });
+    }));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey[200],
         foregroundColor: Colors.black,
         elevation: 0,
         title: Text(
@@ -36,11 +45,12 @@ class _BusDetailPageState extends State<BusDetailPage> {
         ),
       ),
       body: Container(
-        color: Colors.white,
+        color: Colors.grey[200],
         child: FutureBuilder(
           future:stationList,
           builder: (context, snapshot) {
             if(snapshot.hasData){
+              timer();
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
@@ -73,7 +83,6 @@ class _BusDetailPageState extends State<BusDetailPage> {
                                 fontSize:18
                               ),
                             ),
-                            Text(onStation.toString())
                           ],
                         ),
                       ),
