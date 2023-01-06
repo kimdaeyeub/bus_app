@@ -78,24 +78,24 @@ class _StationDetailPageState extends State<StationDetailPage> {
                                     fontWeight: FontWeight.w600
                                   ),
                                 ),
-                                // Column(
-                                //   children: [
-                                //     Text(
-                                //       '남은 시간:${bus.min1} / 남은 정류장수:${bus.station1}',
-                                //       style: TextStyle(
-                                //         fontSize: 14,
-                                //         color: Colors.black.withOpacity(0.4)
-                                //       ),
-                                //     ),
-                                //     Text(
-                                //       '남은 시간:${bus.min2} / 남은 정류장수:${bus.station2}',
-                                //       style: TextStyle(
-                                //         fontSize: 14,
-                                //         color: Colors.black.withOpacity(0.4)
-                                //       ),
-                                //     ),
-                                //   ],
-                                // ),
+                                 Column(
+                                   children: [
+                                     Text(
+                                      bus.min1 != null ? '남은 시간:${bus.min1} / 남은 정류장수:${bus.station1}': "",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black.withOpacity(0.4)
+                                      ),
+                                    ),
+                                    Text(
+                                      bus.min2 != null ? '남은 시간:${bus.min2} / 남은 정류장수:${bus.station2}' : '',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black.withOpacity(0.4)
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
                           )
