@@ -23,9 +23,9 @@ class _BusDetailPageState extends State<BusDetailPage> {
     stationList = ApiServices.getLineStationInfo(widget.lineid);
   }
 
-    void timer(){
+  void timer(){
     Timer(Duration(seconds:30),(() {
-          setState(() {
+      setState(() {
         stationList = ApiServices.getLineStationInfo(widget.lineid);
       });
     }));
@@ -113,7 +113,9 @@ class _BusDetailPageState extends State<BusDetailPage> {
               );
             }
             return Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color:Colors.black ,
+              ),
             );
           },
         ),

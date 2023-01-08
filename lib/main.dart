@@ -1,5 +1,4 @@
 import 'package:bus_app/main_page.dart';
-import 'package:bus_app/screens/home_screen.dart';
 import 'package:bus_app/service.dart';
 import 'package:flutter/material.dart';
 

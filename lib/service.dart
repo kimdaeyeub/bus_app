@@ -88,7 +88,6 @@ class ApiServices{
     //노선 정류소 조회
     //3
     //버스 진행도(버스 리스트)
-
     final String API = 'https://apis.data.go.kr/6260000/BusanBIMS/busInfoByRouteId?serviceKey=fqfHkv8FqBv3owcwidWY4R4PB7cITG%2FavEUwoL%2FWzmKjgevLWcU5EC%2FMoxwA6IbPYiG6%2FAxsATu7qGILV6c%2Big%3D%3D';
 
     final url = Uri.parse('$API&lineid=$lineid');
@@ -96,14 +95,17 @@ class ApiServices{
 
     List<LineStationModel> listStationInstances = [];
 
-    final getXmlData = response.body; 
-    final Xml2JsonData = Xml2Json()..parse(getXmlData);
-    final jsonData = Xml2JsonData.toParker(); 
-    final lineStations= jsonDecode(jsonData)['response']['body']['items']['item'];
-    for(var lineStation in lineStations){
-    listStationInstances.add(LineStationModel.fromJson(lineStation));
-  }
-    return listStationInstances;
+    if(response.statusCode == 200){
+      final getXmlData = response.body; 
+      final Xml2JsonData = Xml2Json()..parse(getXmlData);
+      final jsonData = Xml2JsonData.toParker(); 
+      final lineStations= jsonDecode(jsonData)['response']['body']['items']['item'];
+      for(var lineStation in lineStations){
+      listStationInstances.add(LineStationModel.fromJson(lineStation));
+    }
+      return listStationInstances;
+    }
+    throw Error();
   }
 
   static Future<List<StationArrModel>> getStationArrInfo(String bstopid) async{
@@ -117,29 +119,27 @@ class ApiServices{
     final url = Uri.parse('$API&bstopid=$bstopid');
     final response = await http.get(url);
 
-    final getXmlData = response.body; 
-    final Xml2JsonData = Xml2Json()..parse(getXmlData);
-    final jsonData = Xml2JsonData.toParker(); 
-    final infos = jsonDecode(jsonData)['response']['body']['items']['item'];
+    if(response.statusCode == 200){
+      final getXmlData = response.body; 
+      final Xml2JsonData = Xml2Json()..parse(getXmlData);
+      final jsonData = Xml2JsonData.toParker(); 
+      final infos = jsonDecode(jsonData)['response']['body']['items']['item'];
 
-    if('${infos.runtimeType}' == 'List<dynamic>'){
-      //print('true');
-      for(var info in infos ){
-      //print('info:$info');
-      arrInfoInstances.add(StationArrModel.fromJson(info));
-    }
-    }else{
-      //print('false');
-      arrInfoInstances.add(StationArrModel.fromJson(infos));
-      //print('infos:$infos');
-    }
+      if('${infos.runtimeType}' == 'List<dynamic>'){
+        //print('true');
+        for(var info in infos ){
+        //print('info:$info');
+        arrInfoInstances.add(StationArrModel.fromJson(info));
+      }
+      }else{
+        //print('false');
+        arrInfoInstances.add(StationArrModel.fromJson(infos));
+        //print('infos:$infos');
+      }
 
-    //    print(infos.runtimeType);
-    //    print('infos:$infos');
-    //for(var info in infos ){
-    //arrInfoInstances.add(StationArrModel.fromJson(info));
-    //}
-    return arrInfoInstances;
+      return arrInfoInstances;
+    }
+    throw Error();
   }
   //	노선 정류소 도착정보 조회
   static Future<List<LineStationArrInfoModel>> getLineStationArrInfo(String lineid, String bstopid) async{
@@ -152,16 +152,16 @@ class ApiServices{
     final url =Uri.parse('$API&lineid=$lineid&bstopid=$bstopid');
     final response = await http.get(url);
 
-    final getXmlData = response.body; 
-    final Xml2JsonData = Xml2Json()..parse(getXmlData);
-    final jsonData = Xml2JsonData.toParker(); 
-    final info = jsonDecode(jsonData)['response']['body']['items']['item'];
+    if(response.statusCode == 200){
 
-    infoInStances.add(LineStationArrInfoModel.fromJson(info));
-    return infoInStances;
-    //    for(var info in infos){
-    //    infoInStances.add(LineStationArrInfoModel.fromJson(info));
-    //    print(infoInStances);
-    //  }
+      final getXmlData = response.body; 
+      final Xml2JsonData = Xml2Json()..parse(getXmlData);
+      final jsonData = Xml2JsonData.toParker(); 
+      final info = jsonDecode(jsonData)['response']['body']['items']['item'];
+
+      infoInStances.add(LineStationArrInfoModel.fromJson(info));
+      return infoInStances;
+    }
+    throw Error();
   }
 }

@@ -227,7 +227,9 @@ class SearchResult extends StatelessWidget {
           );
         }
         return Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: Colors.black,
+          ),
         );
       },
     );
